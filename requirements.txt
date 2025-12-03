@@ -1,0 +1,24 @@
+# Core AI/LLM Libraries
+langchain==0.1.20              # Framework for building LLM applications (chains, agents)
+langchain-openai==0.1.0        # OpenAI integration for LangChain (embeddings) - updated for compatibility
+langchain-anthropic==0.1.6     # Anthropic/Claude integration for LangChain
+langchain-community==0.0.38    # Community integrations (FAISS, document loaders)
+openai==1.14.0                 # OpenAI API client (for embeddings)
+anthropic>=0.23.0              # Anthropic API client (for Claude) - flexible version for compatibility
+
+# Vector Store & Embeddings
+faiss-cpu==1.9.0.post1         # Facebook's vector similarity search (local, CPU version)
+tiktoken==0.6.0                # Token counting (for OpenAI models)
+
+# Document Processing
+pypdf==4.1.0                   # PDF file reader (extracts text from PDFs)
+python-magic-bin==0.4.14       # File type detection (Windows-compatible)
+
+# Web Interface
+streamlit==1.32.2              # Web UI framework (creates the chat interface)
+
+# Configuration & Environment
+python-dotenv==1.0.1           # Load environment variables from .env file
+
+# Utilities
+typing-extensions==4.10.0      # Type hints for better code (Python 3.12 compatible)

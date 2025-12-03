@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(tree:*)",
+      "Bash(git init:*)",
+      "Bash(ls:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(py:*)",
+      "Bash(python3.12:*)",
+      "Bash(source:*)",
+      "Bash(PYTHONIOENCODING=utf-8 python:*)",
+      "Bash(streamlit run:*)",
+      "Bash(curl:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
