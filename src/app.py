@@ -25,12 +25,12 @@ st.set_page_config(
     page_title="TechStyle AI Support",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS with your design system
+# Custom CSS with simplified, reliable design
 def load_css():
-    """Inject custom CSS based on the provided design system"""
+    """Inject custom CSS - simplified version that works reliably"""
     st.markdown("""
     <style>
     /* Import Google Fonts - Space Grotesk & Inter */
@@ -41,88 +41,32 @@ def load_css():
         --color-beige: #e7e3dc;
         --color-navy: #1E3A8A;
         --color-cyan: #06B6D4;
+        --color-navy-light: #3B82F6;
         --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
-    /* Main app background with gradient blobs */
+    /* Main app background - simple gradient */
     .stApp {
-        background-color: var(--color-beige);
+        background: linear-gradient(135deg, #e7e3dc 0%, #d4cfc5 50%, #e7e3dc 100%);
         font-family: var(--font-body);
-        position: relative;
     }
 
-    /* Gradient blob background */
-    .stApp::before {
-        content: '';
-        position: fixed;
-        top: 20%;
-        left: 15%;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, var(--color-navy) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(120px);
-        opacity: 0.9;
-        transform: translate(-50%, -50%) rotate(12deg);
-        z-index: 0;
-        pointer-events: none;
+    /* Hide sidebar completely */
+    [data-testid="stSidebar"] {
+        display: none;
     }
 
-    .stApp::after {
-        content: '';
-        position: fixed;
-        top: -10%;
-        right: -10%;
-        width: 1100px;
-        height: 900px;
-        background: radial-gradient(circle, var(--color-navy) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(100px);
-        opacity: 1.0;
-        z-index: 0;
-        pointer-events: none;
+    /* Remove sidebar collapse button */
+    button[kind="header"] {
+        display: none;
     }
 
-    /* Noise texture overlay */
-    .stApp > div:first-child {
-        position: relative;
-    }
-
-    .stApp > div:first-child::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        mix-blend-mode: overlay;
-        opacity: 0.3;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .stApp > div:first-child::after {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        mix-blend-mode: overlay;
-        opacity: 0.5;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    /* Ensure content is above background */
+    /* Ensure content is readable */
     .main .block-container {
-        position: relative;
-        z-index: 2;
-        max-width: 816px;
-        padding-top: 3rem;
+        max-width: 900px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
     }
 
     /* Typography - Headings */
@@ -251,6 +195,68 @@ def load_css():
         box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
     }
 
+    /* Chat input - lighter supporting color */
+    /* Target the bottom fixed container */
+    section[data-testid="stBottom"] {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+
+    section[data-testid="stBottom"] > div {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+
+    .stBottomBlockContainer {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+
+    [data-testid="stBottom"] {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+
+    /* All chat input containers */
+    [data-testid="stChatInput"] {
+        background-color: transparent !important;
+    }
+
+    [data-testid="stChatInput"] > div {
+        background-color: transparent !important;
+        border-radius: 1rem;
+        padding: 0;
+    }
+
+    [data-testid="stChatInput"] > div > div {
+        background-color: transparent !important;
+    }
+
+    .stChatInputContainer {
+        background-color: transparent !important;
+    }
+
+    /* Override any default dark backgrounds */
+    div[class*="stChatInput"] {
+        background-color: transparent !important;
+    }
+
+    [data-testid="stChatInput"] textarea {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid rgba(6, 182, 212, 0.3) !important;
+        border-radius: 0.75rem !important;
+        font-family: var(--font-body) !important;
+        color: var(--color-navy) !important;
+        padding: 0.75rem !important;
+        font-size: 1rem !important;
+    }
+
+    [data-testid="stChatInput"] textarea:focus {
+        border-color: var(--color-cyan) !important;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15) !important;
+        outline: none !important;
+    }
+
     /* File uploader */
     [data-testid="stFileUploader"] {
         background-color: rgba(255, 255, 255, 0.8);
@@ -289,6 +295,15 @@ def load_css():
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
+    /* Hide anchor link buttons on headers */
+    .stMarkdown h1 a, .stMarkdown h2 a, .stMarkdown h3 a {
+        display: none !important;
+    }
+
+    h1 a, h2 a, h3 a {
+        display: none !important;
+    }
+
     /* Custom scrollbar */
     ::-webkit-scrollbar {
         width: 10px;
@@ -319,68 +334,55 @@ def initialize_session_state():
         try:
             st.session_state.rag_chain = RAGChain()
             st.session_state.vector_store_loaded = True
-        except:
+            st.session_state.load_error = None
+        except Exception as e:
             st.session_state.rag_chain = None
             st.session_state.vector_store_loaded = False
+            st.session_state.load_error = str(e)
 
     if 'documents_processed' not in st.session_state:
         st.session_state.documents_processed = False
 
 
 def sidebar():
-    """Render sidebar with document management"""
+    """Render customer-facing sidebar"""
     with st.sidebar:
         st.markdown('<div class="badge">AI SUPPORT AGENT</div>', unsafe_allow_html=True)
-        st.title("📚 Knowledge Base")
+        st.title("💬 Support Chat")
 
         st.markdown("---")
 
-        # Document upload
-        st.subheader("Upload Documents")
-        st.caption("Add PDF, TXT, or MD files to the knowledge base")
-
-        uploaded_files = st.file_uploader(
-            "Choose files",
-            type=['pdf', 'txt', 'md'],
-            accept_multiple_files=True,
-            label_visibility="collapsed"
-        )
-
-        if uploaded_files:
-            if st.button("🔄 Process Documents", use_container_width=True):
-                process_documents(uploaded_files)
+        # Help section
+        st.subheader("How can we help?")
+        st.markdown("""
+        I can answer questions about:
+        - Return & refund policies
+        - Shipping options & delivery times
+        - Payment methods
+        - Order cancellation
+        - And more!
+        """)
 
         st.markdown("---")
 
-        # Current status
-        st.subheader("📊 Status")
-
+        # Status indicator
         if st.session_state.vector_store_loaded:
-            st.success("✅ Vector store loaded")
+            st.success("🟢 AI Assistant Online")
         else:
-            st.warning("⚠️ No vector store found")
-
-        # Show document stats
-        if config.SAMPLE_DOCS_DIR.exists():
-            docs = list(config.SAMPLE_DOCS_DIR.glob("*"))
-            doc_files = [d for d in docs if d.is_file() and d.suffix in ['.pdf', '.txt', '.md']]
-            st.metric("Documents", len(doc_files))
-
-        st.markdown("---")
-
-        # Settings
-        with st.expander("⚙️ Settings"):
-            st.slider("Temperature", 0.0, 1.0, config.TEMPERATURE, 0.1,
-                     help="Higher = more creative, Lower = more focused")
-            st.slider("Retrieved Chunks", 1, 10, config.RETRIEVAL_K, 1,
-                     help="Number of document chunks to retrieve")
+            st.error("🔴 AI Assistant Offline")
 
         st.markdown("---")
 
         # Clear chat
-        if st.button("🗑️ Clear Chat History", use_container_width=True):
+        if st.button("🗑️ New Conversation", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
+
+        st.markdown("---")
+
+        # Footer
+        st.caption("Powered by Claude AI")
+        st.caption("© 2024 TechStyle Electronics")
 
 
 def process_documents(uploaded_files: List):
@@ -423,7 +425,6 @@ def main():
     """Main app"""
     load_css()
     initialize_session_state()
-    sidebar()
 
     # Header
     st.markdown('<div class="badge">#52WeeksOfAI - Agent #2</div>', unsafe_allow_html=True)
@@ -433,6 +434,11 @@ def main():
     # Check if vector store is loaded
     if not st.session_state.vector_store_loaded:
         st.warning("⚠️ **No knowledge base found.** Please upload documents in the sidebar to get started.")
+
+        # Show error if there was one during loading
+        if hasattr(st.session_state, 'load_error') and st.session_state.load_error:
+            with st.expander("🔍 Debug Info - Click to see error details"):
+                st.error(f"Error loading RAG chain: {st.session_state.load_error}")
 
         # Quick start example
         with st.expander("📖 Quick Start Guide"):
@@ -481,8 +487,11 @@ def main():
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 try:
-                    # Get answer from RAG chain
-                    result = st.session_state.rag_chain.ask_with_details(prompt)
+                    # Get answer from RAG chain with conversation history
+                    result = st.session_state.rag_chain.ask_with_details(
+                        prompt,
+                        chat_history=st.session_state.messages
+                    )
 
                     answer = result['answer']
                     sources = result['source_files']

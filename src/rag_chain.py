@@ -61,9 +61,9 @@ class RAGChain:
             try:
                 self.vector_store.load()
                 if config.DEBUG:
-                    print(f"📂 Loaded vector store from {config.VECTOR_STORE_DIR}")
+                    print(f"Loaded vector store from {config.VECTOR_STORE_DIR}")
             except FileNotFoundError:
-                print("⚠️  No vector store found. Create one first with VectorStore.create_from_documents()")
+                print(" No vector store found. Create one first with VectorStore.create_from_documents()")
                 raise
         else:
             self.vector_store = vector_store
@@ -79,7 +79,7 @@ class RAGChain:
         self.chain = self._create_chain()
 
         if config.DEBUG:
-            print(f"🤖 RAG Chain initialized:")
+            print(f"RAG Chain initialized:")
             print(f"   Model: {self.model_name}")
             print(f"   Temperature: {self.temperature}")
             print(f"   Retrieval K: {self.retrieval_k}")
@@ -110,6 +110,9 @@ IMPORTANT RULES:
 3. Be concise but complete - answer the question fully but don't add extra information
 4. Be professional and friendly
 5. If you reference specific policies or details, you can mention where they came from (e.g., "According to our return policy...")
+6. Use the conversation history to understand follow-up questions and pronouns (like "it", "that", "the same")
+
+{chat_history}
 
 Context from company documentation:
 {context}
@@ -141,6 +144,29 @@ Your Answer:"""
 
         return "\n\n---\n\n".join(formatted)
 
+    def _format_chat_history(self, messages: List[Dict[str, str]]) -> str:
+        """
+        Format conversation history for the prompt.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content'
+
+        Returns:
+            Formatted conversation history string
+        """
+        if not messages:
+            return ""
+
+        # Take last 6 messages (3 exchanges) for context
+        recent_messages = messages[-6:]
+
+        formatted = ["Previous conversation:"]
+        for msg in recent_messages:
+            role = "Customer" if msg["role"] == "user" else "Assistant"
+            formatted.append(f"{role}: {msg['content']}")
+
+        return "\n".join(formatted) + "\n"
+
     def _create_chain(self):
         """
         Create the RAG chain using LangChain LCEL (LangChain Expression Language).
@@ -171,10 +197,12 @@ Your Answer:"""
 
         # Build the chain using LCEL
         # This is equivalent to: question → retrieve → format → prompt → llm → parse
+        # Note: We'll pass chat_history separately in the ask() method
         chain = (
             {
-                "context": retriever | self._format_docs,  # Retrieve and format docs
-                "question": RunnablePassthrough()  # Pass question through
+                "context": lambda x: self._format_docs(retriever.invoke(x["question"])),
+                "question": lambda x: x["question"],
+                "chat_history": lambda x: x.get("chat_history", "")
             }
             | prompt  # Fill the prompt template
             | self.llm  # Send to Claude
@@ -183,13 +211,14 @@ Your Answer:"""
 
         return chain
 
-    def ask(self, question: str, return_sources: bool = False) -> Dict[str, any]:
+    def ask(self, question: str, return_sources: bool = False, chat_history: List[Dict[str, str]] = None) -> Dict[str, any]:
         """
         Ask a question and get an answer from the RAG system.
 
         Args:
             question: User's question
             return_sources: If True, also return the source chunks used
+            chat_history: Optional list of previous messages for context
 
         Returns:
             Dict with 'answer' and optionally 'sources'
@@ -202,10 +231,16 @@ Your Answer:"""
         """
 
         if config.DEBUG:
-            print(f"\n🔍 Question: {question}")
+            print(f"\nQuestion: {question}")
+
+        # Format chat history if provided
+        formatted_history = self._format_chat_history(chat_history or [])
 
         # Get the answer from the chain
-        answer = self.chain.invoke(question)
+        answer = self.chain.invoke({
+            "question": question,
+            "chat_history": formatted_history
+        })
 
         result = {"answer": answer}
 
@@ -216,20 +251,24 @@ Your Answer:"""
             result["sources"] = sources
 
             if config.DEBUG:
-                print(f"\n📚 Retrieved {len(sources)} source chunks:")
+                print(f"\nRetrieved {len(sources)} source chunks:")
                 for i, doc in enumerate(sources, 1):
                     source = doc.metadata.get('source', 'Unknown')
                     preview = doc.page_content[:100].replace('\n', ' ')
                     print(f"   {i}. [{source}] {preview}...")
 
         if config.DEBUG:
-            print(f"\n💬 Answer: {answer}\n")
+            print(f"\nAnswer: {answer}\n")
 
         return result
 
-    def ask_with_details(self, question: str) -> Dict[str, any]:
+    def ask_with_details(self, question: str, chat_history: List[Dict[str, str]] = None) -> Dict[str, any]:
         """
         Ask a question and get detailed response with sources and metadata.
+
+        Args:
+            question: User's question
+            chat_history: Optional list of previous messages for context
 
         Returns:
             Dict with:
@@ -240,7 +279,7 @@ Your Answer:"""
 
         Useful for debugging or showing users where info came from!
         """
-        result = self.ask(question, return_sources=True)
+        result = self.ask(question, return_sources=True, chat_history=chat_history)
 
         # Extract source file names
         source_files = list(set(
@@ -261,15 +300,15 @@ if __name__ == "__main__":
     Run with: PYTHONIOENCODING=utf-8 python -m src.rag_chain
     """
 
-    print("🧪 Testing RAG Chain with Claude Sonnet 4...")
+    print("Testing RAG Chain with Claude Sonnet 4...")
     print("=" * 70)
 
     # Initialize RAG chain
     try:
         rag = RAGChain()
-        print("✅ RAG Chain initialized successfully!\n")
+        print("RAG Chain initialized successfully!\n")
     except FileNotFoundError:
-        print("❌ Vector store not found. Run vector_store.py first!")
+        print("Vector store not found. Run vector_store.py first!")
         exit(1)
 
     # Test questions
@@ -302,7 +341,7 @@ if __name__ == "__main__":
         }
     ]
 
-    print("\n📋 Testing RAG Chain with sample questions...")
+    print("\nTesting RAG Chain with sample questions...")
     print("=" * 70)
 
     for i, test in enumerate(test_questions, 1):
@@ -316,13 +355,13 @@ if __name__ == "__main__":
         # Get detailed answer
         result = rag.ask_with_details(test['question'])
 
-        print(f"\n💬 Answer:\n{result['answer']}")
-        print(f"\n📚 Sources used: {result['chunk_count']} chunks from:")
+        print(f"\nAnswer:\n{result['answer']}")
+        print(f"\nSources used: {result['chunk_count']} chunks from:")
         for source in result['source_files']:
             print(f"   - {source}")
 
     print("\n" + "=" * 70)
-    print("✅ RAG Chain testing complete!")
+    print("RAG Chain testing complete!")
     print("=" * 70)
 
     # Interactive mode
@@ -341,11 +380,11 @@ if __name__ == "__main__":
                 continue
 
             result = rag.ask_with_details(question)
-            print(f"\n💬 Answer:\n{result['answer']}")
-            print(f"\n📚 Used {result['chunk_count']} chunks from: {', '.join(result['source_files'])}")
+            print(f"\nAnswer:\n{result['answer']}")
+            print(f"\nUsed {result['chunk_count']} chunks from: {', '.join(result['source_files'])}")
 
         except KeyboardInterrupt:
             print("\n\n👋 Goodbye!")
             break
         except Exception as e:
-            print(f"\n❌ Error: {e}")
+            print(f"\nError: {e}")

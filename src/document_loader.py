@@ -63,7 +63,7 @@ class DocumentLoader:
         )
 
         if config.DEBUG:
-            print(f"📄 DocumentLoader initialized:")
+            print(f"DocumentLoader initialized:")
             print(f"   Chunk size: {self.chunk_size}")
             print(f"   Chunk overlap: {self.chunk_overlap}")
 
@@ -104,12 +104,12 @@ class DocumentLoader:
             documents = loader.load()
 
             if config.DEBUG:
-                print(f"✅ Loaded {file_path.name}: {len(documents)} page(s)")
+                print(f"Loaded {file_path.name}: {len(documents)} page(s)")
 
             return documents
 
         except Exception as e:
-            print(f"❌ Error loading {file_path.name}: {e}")
+            print(f"Error loading {file_path.name}: {e}")
             raise
 
     def load_directory(self, directory_path: Path) -> List[Document]:
@@ -139,10 +139,10 @@ class DocumentLoader:
                     docs = self.load_file(file_path)
                     documents.extend(docs)
                 except Exception as e:
-                    print(f"⚠️  Skipping {file_path.name}: {e}")
+                    print(f" Skipping {file_path.name}: {e}")
                     continue
 
-        print(f"📚 Loaded {len(documents)} document(s) from {directory_path.name}")
+        print(f"Loaded {len(documents)} document(s) from {directory_path.name}")
         return documents
 
     def split_documents(self, documents: List[Document]) -> List[Document]:
@@ -163,7 +163,7 @@ class DocumentLoader:
         Output: 10 chunks (1,000 chars each with 100 char overlap)
         """
         if not documents:
-            print("⚠️  No documents to split")
+            print(" No documents to split")
             return []
 
         # Calculate total characters before splitting
@@ -173,7 +173,7 @@ class DocumentLoader:
         chunks = self.text_splitter.split_documents(documents)
 
         if config.DEBUG:
-            print(f"✂️  Split {len(documents)} documents into {len(chunks)} chunks")
+            print(f" Split {len(documents)} documents into {len(chunks)} chunks")
             print(f"   Total characters: {total_chars:,}")
             print(f"   Average chunk size: {total_chars // len(chunks) if chunks else 0} chars")
 
@@ -205,7 +205,7 @@ class DocumentLoader:
         # Split into chunks
         chunks = self.split_documents(documents)
 
-        print(f"✅ Processed {path.name}: {len(chunks)} chunks ready")
+        print(f"Processed {path.name}: {len(chunks)} chunks ready")
         return chunks
 
     def get_chunk_preview(self, chunks: List[Document], num_chunks: int = 3) -> None:
@@ -218,7 +218,7 @@ class DocumentLoader:
 
         Why preview? Helps you verify chunks look reasonable.
         """
-        print(f"\n📋 Preview of first {num_chunks} chunks:")
+        print(f"\nPreview of first {num_chunks} chunks:")
         print("=" * 60)
 
         for i, chunk in enumerate(chunks[:num_chunks]):
@@ -235,14 +235,14 @@ if __name__ == "__main__":
     Test the document loader with sample documents.
     Run with: python -m src.document_loader
     """
-    print("🧪 Testing DocumentLoader...")
+    print("Testing DocumentLoader...")
 
     # Initialize loader
     loader = DocumentLoader()
 
     # Check if sample docs exist
     if not config.SAMPLE_DOCS_DIR.exists() or not any(config.SAMPLE_DOCS_DIR.iterdir()):
-        print(f"\n⚠️  No documents found in {config.SAMPLE_DOCS_DIR}")
+        print(f"\n No documents found in {config.SAMPLE_DOCS_DIR}")
         print("Create some sample documents first!")
     else:
         # Load and split documents

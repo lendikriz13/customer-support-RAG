@@ -97,8 +97,8 @@ class Config:
         Hides API keys for security.
         """
         print("=== Configuration ===")
-        print(f"OpenAI API Key: {cls.OPENAI_API_KEY[:20]}..." if cls.OPENAI_API_KEY else "❌ Missing")
-        print(f"Anthropic API Key: {cls.ANTHROPIC_API_KEY[:25]}..." if cls.ANTHROPIC_API_KEY else "❌ Missing")
+        print(f"OpenAI API Key: {cls.OPENAI_API_KEY[:20]}..." if cls.OPENAI_API_KEY else "Missing")
+        print(f"Anthropic API Key: {cls.ANTHROPIC_API_KEY[:25]}..." if cls.ANTHROPIC_API_KEY else "Missing")
         print(f"Chunk Size: {cls.CHUNK_SIZE}")
         print(f"Chunk Overlap: {cls.CHUNK_OVERLAP}")
         print(f"Embedding Model: {cls.EMBEDDING_MODEL}")
@@ -119,7 +119,7 @@ try:
     if Config.DEBUG:
         Config.print_config()
 except ValueError as e:
-    print(f"\n❌ Configuration Error:\n{e}\n")
+    print(f"\nConfiguration Error:\n{e}\n")
     print("💡 Fix your .env file and try again.\n")
     raise
 

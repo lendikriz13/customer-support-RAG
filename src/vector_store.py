@@ -54,7 +54,7 @@ class VectorStore:
         self.vector_store: Optional[FAISS] = None
 
         if config.DEBUG:
-            print(f"🔢 VectorStore initialized with {self.embedding_model_name}")
+            print(f"VectorStore initialized with {self.embedding_model_name}")
 
     def create_from_documents(self, documents: List[Document]) -> FAISS:
         """
@@ -82,7 +82,7 @@ class VectorStore:
         if not documents:
             raise ValueError("Cannot create vector store from empty document list")
 
-        print(f"📊 Creating embeddings for {len(documents)} chunks...")
+        print(f"Creating embeddings for {len(documents)} chunks...")
         print(f"   This will cost ~${len(documents) * 0.00001:.4f} (OpenAI API)")
 
         # Create FAISS vector store from documents
@@ -93,11 +93,11 @@ class VectorStore:
                 embedding=self.embeddings
             )
 
-            print(f"✅ Vector store created with {len(documents)} vectors")
+            print(f"Vector store created with {len(documents)} vectors")
             return self.vector_store
 
         except Exception as e:
-            print(f"❌ Error creating vector store: {e}")
+            print(f"Error creating vector store: {e}")
             raise
 
     def save(self, path: Optional[Path] = None) -> None:
@@ -124,10 +124,10 @@ class VectorStore:
         try:
             # FAISS.save_local saves both the index and metadata
             self.vector_store.save_local(str(save_path))
-            print(f"💾 Vector store saved to {save_path}")
+            print(f"Vector store saved to {save_path}")
 
         except Exception as e:
-            print(f"❌ Error saving vector store: {e}")
+            print(f"Error saving vector store: {e}")
             raise
 
     def load(self, path: Optional[Path] = None) -> FAISS:
@@ -168,11 +168,11 @@ class VectorStore:
                 allow_dangerous_deserialization=True  # Required for pickle loading
             )
 
-            print(f"📂 Vector store loaded from {load_path}")
+            print(f"Vector store loaded from {load_path}")
             return self.vector_store
 
         except Exception as e:
-            print(f"❌ Error loading vector store: {e}")
+            print(f"Error loading vector store: {e}")
             raise
 
     def similarity_search(
@@ -215,12 +215,12 @@ class VectorStore:
             )
 
             if config.DEBUG:
-                print(f"🔍 Found {len(results)} results for query: '{query[:50]}...'")
+                print(f"Found {len(results)} results for query: '{query[:50]}...'")
 
             return results
 
         except Exception as e:
-            print(f"❌ Error during similarity search: {e}")
+            print(f"Error during similarity search: {e}")
             raise
 
     def similarity_search_with_score(
@@ -254,14 +254,14 @@ class VectorStore:
             )
 
             if config.DEBUG:
-                print(f"🔍 Search results with scores:")
+                print(f"Search results with scores:")
                 for i, (doc, score) in enumerate(results, 1):
                     print(f"   {i}. Score: {score:.4f} | Source: {doc.metadata.get('source', 'Unknown')}")
 
             return results
 
         except Exception as e:
-            print(f"❌ Error during similarity search: {e}")
+            print(f"Error during similarity search: {e}")
             raise
 
     def get_retriever(self, k: Optional[int] = None):
@@ -299,25 +299,25 @@ if __name__ == "__main__":
     """
     from src.document_loader import DocumentLoader
 
-    print("🧪 Testing VectorStore...")
+    print("Testing VectorStore...")
     print("=" * 60)
 
     # Step 1: Load documents
-    print("\n📄 Step 1: Loading documents...")
+    print("\nStep 1: Loading documents...")
     loader = DocumentLoader()
     chunks = loader.load_and_split(config.SAMPLE_DOCS_DIR)
 
     # Step 2: Create vector store
-    print(f"\n🔢 Step 2: Creating embeddings for {len(chunks)} chunks...")
+    print(f"\nStep 2: Creating embeddings for {len(chunks)} chunks...")
     vector_store = VectorStore()
     vector_store.create_from_documents(chunks)
 
     # Step 3: Save to disk
-    print("\n💾 Step 3: Saving vector store...")
+    print("\nStep 3: Saving vector store...")
     vector_store.save()
 
     # Step 4: Test similarity search
-    print("\n🔍 Step 4: Testing similarity search...")
+    print("\nStep 4: Testing similarity search...")
     print("=" * 60)
 
     test_queries = [
@@ -337,5 +337,5 @@ if __name__ == "__main__":
             print(f"   {i}. [{source}] {preview}...")
 
     print("\n" + "=" * 60)
-    print("✅ Vector store test complete!")
-    print(f"📂 Index saved to: {config.VECTOR_STORE_DIR}")
+    print("Vector store test complete!")
+    print(f"Index saved to: {config.VECTOR_STORE_DIR}")
